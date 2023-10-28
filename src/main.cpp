@@ -1,10 +1,8 @@
 #include <GL/glut.h>
 #include <cmath>
 
-#include "objects.h"
-
 // Camera parameters
-GLfloat cameraPosition[] = {0.0, 0.0, 5.0}; // Updated initial camera position
+GLfloat cameraPosition[] = {0.0, 0.0, 5.0};
 GLfloat cameraRotation[] = {0.0, 0.0, 0.0};
 GLfloat cameraScale = 1.0;
 
@@ -27,14 +25,16 @@ void setProjection()
     glMatrixMode(GL_MODELVIEW);
 }
 
-// Function to update the camera transformation
+// Function to update the camera transformation using gluLookAt
 void updateCamera()
 {
     glLoadIdentity();
-    glTranslatef(-cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
-    glRotatef(cameraRotation[0], 1.0, 0.0, 0.0);
-    glRotatef(cameraRotation[1], 0.0, 1.0, 0.0);
-    glRotatef(cameraRotation[2], 0.0, 0.0, 1.0);
+    GLfloat lookAt[3];
+    lookAt[0] = cameraPosition[0] + cos(cameraRotation[0] * M_PI / 180.0) * cos(cameraRotation[1] * M_PI / 180.0);
+    lookAt[1] = cameraPosition[1] + sin(cameraRotation[0] * M_PI / 180.0);
+    lookAt[2] = cameraPosition[2] + cos(cameraRotation[0] * M_PI / 180.0) * sin(cameraRotation[1] * M_PI / 180.0);
+
+    gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2], lookAt[0], lookAt[1], lookAt[2], 0.0, 1.0, 0.0);
     glScalef(cameraScale, cameraScale, cameraScale);
 }
 
@@ -89,20 +89,13 @@ void drawCubes()
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     updateCamera();
 
     // Render the visible axes
     drawAxes();
 
-    door();
-    table_Top();
-    window();
-    pillow();
-    drawRoom();
-    cupboard();
-    bed();
-    blackboard();
+    // Render cubes for demonstration
+    drawCubes();
 
     glutSwapBuffers();
 }
