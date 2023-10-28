@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cmath>
 
+#include "objects.h"
+
 // Camera parameters
 GLfloat cameraPosition[] = {0.0, 0.0, 5.0};
 GLfloat cameraRotation[] = {0.0, 0.0, 0.0};
@@ -112,8 +114,14 @@ void display()
     // Render the visible axes
     drawAxes();
 
-    // Render cubes for demonstration
-    drawCubes();
+    door();
+    table_Top();
+    window();
+    drawRoom();
+    cupboard();
+    bed();
+    blackboard();
+    // glutSolidCube(0.5);
 
     glutSwapBuffers();
 }
