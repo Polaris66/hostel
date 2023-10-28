@@ -1,10 +1,15 @@
 #include <GL/glut.h>
+#include <iostream>
 #include <cmath>
 
 // Camera parameters
 GLfloat cameraPosition[] = {0.0, 0.0, 5.0};
 GLfloat cameraRotation[] = {0.0, 0.0, 0.0};
 GLfloat cameraScale = 1.0;
+
+GLfloat initPosition[] = {0.0, 0.0, 5.0};
+GLfloat initRotation[] = {0.0, 0.0, 0.0};
+GLfloat initScale = 1.0;
 
 // Panning speed
 GLfloat panSpeed = 0.1;
@@ -29,12 +34,10 @@ void setProjection()
 void updateCamera()
 {
     glLoadIdentity();
-    GLfloat lookAt[3];
-    lookAt[0] = cameraPosition[0] + cos(cameraRotation[0] * M_PI / 180.0) * cos(cameraRotation[1] * M_PI / 180.0);
-    lookAt[1] = cameraPosition[1] + sin(cameraRotation[0] * M_PI / 180.0);
-    lookAt[2] = cameraPosition[2] + cos(cameraRotation[0] * M_PI / 180.0) * sin(cameraRotation[1] * M_PI / 180.0);
-
-    gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2], lookAt[0], lookAt[1], lookAt[2], 0.0, 1.0, 0.0);
+    glTranslatef(-cameraPosition[0], -cameraPosition[1], -cameraPosition[2]); // Move the camera backward along the Z-axis
+    glRotatef(-cameraRotation[0], 1.0, 0.0, 0.0);                             // Rotate the camera pitch
+    glRotatef(-cameraRotation[1], 0.0, 1.0, 0.0);                             // Rotate the camera yaw
+    glRotatef(-cameraRotation[2], 0.0, 0.0, 1.0);                             // Rotate the camera roll
     glScalef(cameraScale, cameraScale, cameraScale);
 }
 
@@ -85,6 +88,21 @@ void drawCubes()
     glPopMatrix();
 }
 
+void reset()
+{
+    for (int i = 0; i < 3; i++)
+        cameraPosition[i] = initPosition[i];
+    for (int i = 0; i < 3; i++)
+        cameraRotation[i] = initRotation[i];
+    cameraScale = initScale;
+    glLoadIdentity();
+    glTranslatef(initPosition[0], initPosition[1], initPosition[2]);
+    glRotatef(-initRotation[0], 1.0, 0.0, 0.0); // Rotate the camera pitch
+    glRotatef(-initRotation[1], 0.0, 1.0, 0.0); // Rotate the camera yaw
+    glRotatef(-initRotation[2], 0.0, 0.0, 1.0);
+    glScalef(initScale, initScale, initScale);
+}
+
 // Display function
 void display()
 {
@@ -115,9 +133,7 @@ void mouseDrag(int x, int y)
         prevMouseY = y;
         glutPostRedisplay();
     }
-}
-
-// Keyboard function for scaling, translation, and panning
+} // Keyboard function for scaling, translation, and panning
 void keyboard(unsigned char key, int x, int y)
 {
     switch (key)
@@ -141,12 +157,17 @@ void keyboard(unsigned char key, int x, int y)
         cameraPosition[0] += translationSpeed;
         break;
     case 'w': // Pan up
-        cameraPosition[1] += panSpeed;
+        cameraPosition[1] += translationSpeed;
         break;
     case 's': // Pan down
-        cameraPosition[1] -= panSpeed;
+        cameraPosition[1] -= translationSpeed;
+        break;
+    case 'r':
+        std::cout << "hi";
+        reset();
         break;
     }
+
     glutPostRedisplay();
 }
 
@@ -183,6 +204,8 @@ int main(int argc, char **argv)
     glutKeyboardFunc(keyboard);
 
     setProjection();
+
+    reset();
 
     glutMainLoop();
     return 0;
