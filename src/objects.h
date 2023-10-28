@@ -1,65 +1,5 @@
 #pragma once
 #include <GL/glut.h>
-
-void bedleg3()
-{
-    float dimn[3] = {40, 150, 40};
-    float cntr[3] = {20, 50, -720};
-    float clr[3] = {0.6f, 0.3f, 0.1f};
-    drawCube(dimn, cntr, clr);
-}
-void bedleg4()
-{
-    float dimn[3] = {40, 150, 40};
-    float cntr[3] = {280, 50, -720};
-    float clr[3] = {0.6f, 0.3f, 0.1f};
-    drawCube(dimn, cntr, clr);
-}
-void bedleg2()
-{
-    float dimn[3] = {40, 150, 40};
-    float cntr[3] = {280, 50, -980}; // the z is changed from the 4th leg
-    float clr[3] = {0.6f, 0.3f, 0.1f};
-    drawCube(dimn, cntr, clr);
-}
-void bedleg1()
-{
-    float dimn[3] = {40, 150, 40};
-    float cntr[3] = {20, 50, -980};
-    float clr[3] = {0.6f, 0.3f, 0.1f};
-    drawCube(dimn, cntr, clr);
-}
-
-// saame for table legs as well
-
-void table_Top_Leg3()
-{
-    float dimn[3] = {25, 100, 25};
-    float cntr[3] = {812.5, 25, -12.5}; // the dimension for the legs of the table, the dimension of the square from the top is 25*25
-    float clr[3] = {0.6f, 0.3f, 0.1f};
-    drawCube(dimn, cntr, clr);
-}
-void table_Top_Leg4()
-{
-    float dimn[3] = {25, 100, 25};
-    float cntr[3] = {987.5, 25, -12.5}; // the dimension for the legs of the table, the dimension of the square from the top is 25*25
-    float clr[3] = {0.6f, 0.3f, 0.1f};
-    drawCube(dimn, cntr, clr);
-}
-void table_Top_Leg2()
-{
-    float dimn[3] = {25, 100, 25};
-    float cntr[3] = {987.5, 25, -287.5}; // the dimension for the legs of the table, the dimension of the square from the top is 25*25
-    float clr[3] = {0.6f, 0.3f, 0.1f};
-    drawCube(dimn, cntr, clr);
-}
-void table_Top_Leg1()
-{
-    float dimn[3] = {25, 100, 25};
-    float cntr[3] = {812.5, 25, -287.5}; // the dimension for the legs of the table, the dimension of the square from the top is 25*25
-    float clr[3] = {0.6f, 0.3f, 0.1f};
-    drawCube(dimn, cntr, clr);
-}
 void drawCube(float dimn[], float cntr[], float clr[]) // draws the tables and chairs
 {
 
@@ -111,6 +51,66 @@ void drawCube(float dimn[], float cntr[], float clr[]) // draws the tables and c
 
     glEnd();
 }
+void bedleg3()
+{
+    float dimn[3] = {40, 150, 40};
+    float cntr[3] = {20, 50, -420};
+    float clr[3] = {0.6f, 0.3f, 0.1f};
+    drawCube(dimn, cntr, clr);
+}
+void bedleg4()
+{
+    float dimn[3] = {40, 150, 40};
+    float cntr[3] = {280, 50, -420};
+    float clr[3] = {0.6f, 0.3f, 0.1f};
+    drawCube(dimn, cntr, clr);
+}
+void bedleg2()
+{
+    float dimn[3] = {40, 150, 40};
+    float cntr[3] = {280, 50, -980}; // the z is changed from the 4th leg
+    float clr[3] = {0.6f, 0.3f, 0.1f};
+    drawCube(dimn, cntr, clr);
+}
+void bedleg1()
+{
+    float dimn[3] = {40, 150, 40};
+    float cntr[3] = {20, 50, -980};
+    float clr[3] = {0.6f, 0.3f, 0.1f};
+    drawCube(dimn, cntr, clr);
+}
+
+// saame for table legs as well
+
+void table_Top_Leg3()
+{
+    float dimn[3] = {25, 100, 25};
+    float cntr[3] = {812.5, 25, -12.5}; // the dimension for the legs of the table, the dimension of the square from the top is 25*25
+    float clr[3] = {0.6f, 0.3f, 0.1f};
+    drawCube(dimn, cntr, clr);
+}
+void table_Top_Leg4()
+{
+    float dimn[3] = {25, 100, 25};
+    float cntr[3] = {987.5, 25, -12.5}; // the dimension for the legs of the table, the dimension of the square from the top is 25*25
+    float clr[3] = {0.6f, 0.3f, 0.1f};
+    drawCube(dimn, cntr, clr);
+}
+void table_Top_Leg2()
+{
+    float dimn[3] = {25, 100, 25};
+    float cntr[3] = {987.5, 25, -287.5}; // the dimension for the legs of the table, the dimension of the square from the top is 25*25
+    float clr[3] = {0.6f, 0.3f, 0.1f};
+    drawCube(dimn, cntr, clr);
+}
+void table_Top_Leg1()
+{
+    float dimn[3] = {25, 100, 25};
+    float cntr[3] = {812.5, 25, -287.5}; // the dimension for the legs of the table, the dimension of the square from the top is 25*25
+    float clr[3] = {0.6f, 0.3f, 0.1f};
+    drawCube(dimn, cntr, clr);
+}
+
 // convert to cpp code
 
 void door()

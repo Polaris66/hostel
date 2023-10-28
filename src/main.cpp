@@ -1,10 +1,18 @@
 #include <GL/glut.h>
 #include <cmath>
 
+#include "objects.h"
+
 // Camera parameters
-GLfloat cameraPosition[] = {0.0, 0.0, 0.0}; // Updated initial camera position
+GLfloat cameraPosition[] = {0.0, 0.0, 5.0}; // Updated initial camera position
 GLfloat cameraRotation[] = {0.0, 0.0, 0.0};
 GLfloat cameraScale = 1.0;
+
+// Panning speed
+GLfloat panSpeed = 0.1;
+
+// Translation speed
+GLfloat translationSpeed = 0.1;
 
 // Mouse interaction variables
 int prevMouseX, prevMouseY;
@@ -19,16 +27,14 @@ void setProjection()
     glMatrixMode(GL_MODELVIEW);
 }
 
-// Function to update the camera transformation using gluLookAt
+// Function to update the camera transformation
 void updateCamera()
 {
     glLoadIdentity();
-    GLfloat lookAt[3];
-    lookAt[0] = cameraPosition[0] + cos(cameraRotation[0] * M_PI / 180.0) * cos(cameraRotation[1] * M_PI / 180.0);
-    lookAt[1] = cameraPosition[1] + sin(cameraRotation[0] * M_PI / 180.0);
-    lookAt[2] = cameraPosition[2] + cos(cameraRotation[0] * M_PI / 180.0) * sin(cameraRotation[1] * M_PI / 180.0);
-
-    gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2], lookAt[0], lookAt[1], lookAt[2], 0.0, 1.0, 0.0);
+    glTranslatef(-cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
+    glRotatef(cameraRotation[0], 1.0, 0.0, 0.0);
+    glRotatef(cameraRotation[1], 0.0, 1.0, 0.0);
+    glRotatef(cameraRotation[2], 0.0, 0.0, 1.0);
     glScalef(cameraScale, cameraScale, cameraScale);
 }
 
@@ -83,13 +89,19 @@ void drawCubes()
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     updateCamera();
 
     // Render the visible axes
     drawAxes();
 
-    // Render cubes for demonstration
-    drawCubes();
+    door();
+    table_Top();
+    window();
+    // drawRoom();
+    cupboard();
+    bed();
+    blackboard();
 
     glutSwapBuffers();
 }
@@ -111,7 +123,7 @@ void mouseDrag(int x, int y)
     }
 }
 
-// Keyboard function for scaling, translation, and rotation
+// Keyboard function for scaling, translation, and panning
 void keyboard(unsigned char key, int x, int y)
 {
     switch (key)
@@ -122,21 +134,23 @@ void keyboard(unsigned char key, int x, int y)
     case '-': // Scale down
         cameraScale /= 1.1;
         break;
-    case 'w': // Translate forward
-        cameraPosition[0] += 0.1 * sin(cameraRotation[1] * M_PI / 180.0);
-        cameraPosition[2] -= 0.1 * cos(cameraRotation[1] * M_PI / 180.0);
+    case 'q': // Translate forward
+        cameraPosition[2] -= translationSpeed;
         break;
-    case 's': // Translate backward
-        cameraPosition[0] -= 0.1 * sin(cameraRotation[1] * M_PI / 180.0);
-        cameraPosition[2] += 0.1 * cos(cameraRotation[1] * M_PI / 180.0);
+    case 'e': // Translate backward
+        cameraPosition[2] += translationSpeed;
         break;
     case 'a': // Translate left
-        cameraPosition[0] -= 0.1 * cos(cameraRotation[1] * M_PI / 180.0);
-        cameraPosition[2] -= 0.1 * sin(cameraRotation[1] * M_PI / 180.0);
+        cameraPosition[0] -= translationSpeed;
         break;
     case 'd': // Translate right
-        cameraPosition[0] += 0.1 * cos(cameraRotation[1] * M_PI / 180.0);
-        cameraPosition[2] += 0.1 * sin(cameraRotation[1] * M_PI / 180.0);
+        cameraPosition[0] += translationSpeed;
+        break;
+    case 'w': // Pan up
+        cameraPosition[1] += panSpeed;
+        break;
+    case 's': // Pan down
+        cameraPosition[1] -= panSpeed;
         break;
     }
     glutPostRedisplay();
@@ -168,9 +182,6 @@ int main(int argc, char **argv)
     glutCreateWindow("OpenGL Camera Navigation");
 
     glEnable(GL_DEPTH_TEST);
-
-    // Set an initial camera position
-    cameraPosition[2] = 5.0;
 
     glutDisplayFunc(display);
     glutMotionFunc(mouseDrag);
