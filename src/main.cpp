@@ -1,138 +1,184 @@
 #include <GL/glut.h>
-#include <iostream>
+#include <cmath>
 
-float cameraX = 0.0f;
-float cameraY = 0.0f;
-float cameraZ = -5.0f;
+// Camera parameters
+GLfloat cameraPosition[] = {0.0, 0.0, 0.0}; // Updated initial camera position
+GLfloat cameraRotation[] = {0.0, 0.0, 0.0};
+GLfloat cameraScale = 1.0;
 
-float cameraRotationX = 0.0f;
-float cameraRotationY = 0.0f;
-float cameraRotationZ = 0.0f;
-float cameraZoom = 1.0f;
+// Mouse interaction variables
+int prevMouseX, prevMouseY;
+bool isMouseDragging = false;
 
-void setCamera()
+// Function to set up the perspective projection
+void setProjection()
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0, 1.0, 1.0, 100.0);
+    glMatrixMode(GL_MODELVIEW);
+}
+
+// Function to update the camera transformation using gluLookAt
+void updateCamera()
 {
     glLoadIdentity();
-    glTranslatef(cameraX, cameraY, cameraZ);
-    glRotatef(cameraRotationX, 1.0, 0.0, 0.0);
-    glRotatef(cameraRotationY, 0.0, 1.0, 0.0);
-    glRotatef(cameraRotationZ, 0.0, 0.0, 1.0);
-    glScalef(cameraZoom, cameraZoom, cameraZoom);
+    GLfloat lookAt[3];
+    lookAt[0] = cameraPosition[0] + cos(cameraRotation[0] * M_PI / 180.0) * cos(cameraRotation[1] * M_PI / 180.0);
+    lookAt[1] = cameraPosition[1] + sin(cameraRotation[0] * M_PI / 180.0);
+    lookAt[2] = cameraPosition[2] + cos(cameraRotation[0] * M_PI / 180.0) * sin(cameraRotation[1] * M_PI / 180.0);
+
+    gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2], lookAt[0], lookAt[1], lookAt[2], 0.0, 1.0, 0.0);
+    glScalef(cameraScale, cameraScale, cameraScale);
 }
 
-void init(void)
+// Function to draw visible axes
+void drawAxes()
 {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glShadeModel(GL_FLAT);
-}
-
-void display(void)
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-    glColor3f(1.0, 1.0, 1.0);
-
-    setCamera();
-
-    glColor3f(1.0f, 1.0f, 0.0f);
-
-    glutSolidCube(0.5);
-
+    // Draw the X-axis (red)
+    glColor3f(1.0, 0.0, 0.0);
     glBegin(GL_LINES);
-
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glVertex3f(0, 2, 0);
-    glVertex3f(0, -2, 0);
-
-    glColor3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(2, 0, 0);
-    glVertex3f(-2, 0, 0);
-
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glVertex3f(0, 0, 2);
-    glVertex3f(0, 0, -2);
-
+    glVertex3f(-2.0, 0.0, 0.0);
+    glVertex3f(2.0, 0.0, 0.0);
     glEnd();
+
+    // Draw the Y-axis (green)
+    glColor3f(0.0, 1.0, 0.0);
+    glBegin(GL_LINES);
+    glVertex3f(0.0, -2.0, 0.0);
+    glVertex3f(0.0, 2.0, 0.0);
+    glEnd();
+
+    // Draw the Z-axis (blue)
+    glColor3f(0.0, 0.0, 1.0);
+    glBegin(GL_LINES);
+    glVertex3f(0.0, 0.0, -2.0);
+    glVertex3f(0.0, 0.0, 2.0);
+    glEnd();
+}
+
+// Function to draw cubes for demonstration
+void drawCubes()
+{
+    glColor3f(1.0, 0.0, 0.0); // Red cube
+    glPushMatrix();
+    glTranslatef(-1.0, 0.0, 0.0);
+    glutSolidCube(0.5);
+    glPopMatrix();
+
+    glColor3f(0.0, 1.0, 0.0); // Green cube
+    glPushMatrix();
+    glTranslatef(1.0, 0.0, 0.0);
+    glutSolidCube(0.5);
+    glPopMatrix();
+
+    glColor3f(0.0, 0.0, 1.0); // Blue cube
+    glPushMatrix();
+    glTranslatef(0.0, 1.0, 0.0);
+    glutSolidCube(0.5);
+    glPopMatrix();
+}
+
+// Display function
+void display()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    updateCamera();
+
+    // Render the visible axes
+    drawAxes();
+
+    // Render cubes for demonstration
+    drawCubes();
 
     glutSwapBuffers();
 }
 
-void reshape(int w, int h)
+// Mouse drag function for rotation
+void mouseDrag(int x, int y)
 {
-    glViewport(0, 0, (GLsizei)w, (GLsizei)h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 20.0);
-    glMatrixMode(GL_MODELVIEW);
+    if (isMouseDragging)
+    {
+        int dx = x - prevMouseX;
+        int dy = y - prevMouseY;
+
+        cameraRotation[1] += dx * 0.5;
+        cameraRotation[0] += dy * 0.5;
+
+        prevMouseX = x;
+        prevMouseY = y;
+        glutPostRedisplay();
+    }
 }
 
-void processNormalKeys(unsigned char key, int x, int y)
+// Keyboard function for scaling, translation, and rotation
+void keyboard(unsigned char key, int x, int y)
 {
     switch (key)
     {
-    case 27:
-        exit(0);
+    case '+': // Scale up
+        cameraScale *= 1.1;
         break;
-
-    case 'q':
-        cameraZ -= 0.1f;
+    case '-': // Scale down
+        cameraScale /= 1.1;
         break;
-    case 'e':
-        cameraZ += 0.1f;
+    case 'w': // Translate forward
+        cameraPosition[0] += 0.1 * sin(cameraRotation[1] * M_PI / 180.0);
+        cameraPosition[2] -= 0.1 * cos(cameraRotation[1] * M_PI / 180.0);
         break;
-    case 'd':
-        cameraX -= 0.1f;
+    case 's': // Translate backward
+        cameraPosition[0] -= 0.1 * sin(cameraRotation[1] * M_PI / 180.0);
+        cameraPosition[2] += 0.1 * cos(cameraRotation[1] * M_PI / 180.0);
         break;
-    case 'a':
-        cameraX += 0.1f;
+    case 'a': // Translate left
+        cameraPosition[0] -= 0.1 * cos(cameraRotation[1] * M_PI / 180.0);
+        cameraPosition[2] -= 0.1 * sin(cameraRotation[1] * M_PI / 180.0);
         break;
-    case 'w':
-        cameraY -= 0.1f;
-        break;
-    case 's':
-        cameraY += 0.1f;
-        break;
-    case 'i':
-        cameraRotationX += 5.0f;
-        break;
-    case 'u':
-        cameraRotationX -= 5.0f;
-        break;
-    case 'k':
-        cameraRotationY += 5.0f;
-        break;
-    case 'j':
-        cameraRotationY -= 5.0f;
-        break;
-    case 'm':
-        cameraRotationZ += 5.0f;
-        break;
-    case 'n':
-        cameraRotationZ -= 5.0f;
-        break;
-    case '+':
-        cameraZoom *= 1.1f;
-        break;
-    case '-':
-        cameraZoom /= 1.1f;
-        break;
-    default:
+    case 'd': // Translate right
+        cameraPosition[0] += 0.1 * cos(cameraRotation[1] * M_PI / 180.0);
+        cameraPosition[2] += 0.1 * sin(cameraRotation[1] * M_PI / 180.0);
         break;
     }
-
     glutPostRedisplay();
+}
+
+// Mouse click function
+void mouseClick(int button, int state, int x, int y)
+{
+    if (button == GLUT_LEFT_BUTTON)
+    {
+        if (state == GLUT_DOWN)
+        {
+            isMouseDragging = true;
+            prevMouseX = x;
+            prevMouseY = y;
+        }
+        else if (state == GLUT_UP)
+        {
+            isMouseDragging = false;
+        }
+    }
 }
 
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(500, 500);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow(argv[1]);
-    init();
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitWindowSize(800, 800);
+    glutCreateWindow("OpenGL Camera Navigation");
+
+    glEnable(GL_DEPTH_TEST);
+
+    // Set an initial camera position
+    cameraPosition[2] = 5.0;
+
     glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutKeyboardFunc(processNormalKeys);
+    glutMotionFunc(mouseDrag);
+    glutMouseFunc(mouseClick);
+    glutKeyboardFunc(keyboard);
+
+    setProjection();
+
     glutMainLoop();
     return 0;
 }
