@@ -98,7 +98,8 @@ void display()
     door();
     table_Top();
     window();
-    // drawRoom();
+    pillow();
+    drawRoom();
     cupboard();
     bed();
     blackboard();

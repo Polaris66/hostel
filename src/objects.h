@@ -166,53 +166,53 @@ void blackboard()
     float clr[3] = {0.0f, 0.0f, 0.0f};
     drawCube(dimn, cntr, clr);
 }
-
-// void drawxx
 void drawRoom()
 {
     glBegin(GL_QUADS);
     // Floor /
-    glColor3f(0.0f, 1.0f, 0.0f);
+    glColor3f(0.98f, 0.98f, 0.98f); // correct
     glVertex3f(0, 0, 0);
     glVertex3f(1000, 0, 0);
     glVertex3f(1000, 0, -1000);
     glVertex3f(0, 0, -1000);
     // Ceiling /
-    glColor3f(0.0f, 1.0f, 0.0f);
+    glColor3f(0.98f, 0.98f, 0.98f); // correct
     glVertex3f(0, 1000, 0);
     glVertex3f(1000, 1000, 0);
     glVertex3f(1000, 1000, -1000);
     glVertex3f(0, 1000, -1000);
     // Walls
-    glColor3f(0.0f, 0.0f, 1.0f); // wall with the blackboard // or the right wall
+    glColor3f(0.98f, 0.98f, 0.98f); // or the right wall
     glVertex3f(1000, 0, 0);
     glVertex3f(1000, 0, -1000);
-    glVertex3f(1000, 1000, 0);
     glVertex3f(1000, 1000, -1000);
+    glVertex3f(1000, 1000, 0);
 
-    // glColor3f(0.0f, 0.0f, 0.0f); // blackboard
-    // glVertex3f(-20, 0, 59.9);
-    // glVertex3f(20, 0, 59.9);
-    // glVertex3f(20, 20, 59.9);
-    // glVertex3f(-20, 20, 59.9);
-
-    glColor3f(0.0f, 0.0f, 1.0f); // back wall
+    glColor3f(0.98f, 0.98f, 0.98f); // back wall
     glVertex3f(0, 0, -1000);
-    glVertex3f(0, 1000, -1000);
+    glVertex3f(1000, 0, -1000);
     glVertex3f(1000, 1000, -1000);
-    glVertex3f(-1000, 0, -1000);
+    glVertex3f(0, 1000, -1000);
 
-    glColor3f(1.0f, 1.0f, 0.0f); // front wall
+    glColor3f(0.98f, 0.98f, 0.98f); // front wall
     glVertex3f(0, 0, 0);
-    glVertex3f(0, 1000, 0);
+    glVertex3f(1000, 0, 0);
     glVertex3f(1000, 1000, 0);
-    glVertex3f(-1000, 0, 0);
+    glVertex3f(0, 1000, 0);
 
-    glColor3f(1.0f, 0.0f, 0.0f);
+    glColor3f(0.98f, 0.98f, 0.98f); // left wall
     glVertex3f(0, 0, 0);
     glVertex3f(0, 0, -1000);
-    glVertex3f(0, 1000, 0);
     glVertex3f(0, 1000, -1000);
+    glVertex3f(0, 1000, 0);
 
     glEnd();
+}
+
+void pillow()
+{
+    float dimn[3] = {200, 50, 200};
+    float cntr[3] = {150, 175, -850};
+    float clr[3] = {1.0f, 1.0f, 1.0f};
+    drawCube(dimn, cntr, clr);
 }
